@@ -1,19 +1,19 @@
-from DNAToolKit import *
-import random
-from utilities import *
+from bio_seq import *
 
-#rndDNAStr = "ATTGCGTTA"
-randDNAStr = ''.join([random.choice(Nucleotides) for nuc in range(50
-)])
+test_dna=bio_seq()
+test_dna.generate_rnd_seq(50, "DNA")
 
-DNAStr=validateSeq(randDNAStr)
+print(test_dna.get_seq_info())
+print(test_dna.nucleotide_frequency())
+print(test_dna.transcription())
+print(test_dna.reverse_complement())
+print(test_dna.gc_content())
+print(test_dna.gc_content_subsec())
+print(test_dna.translate_seq())
+print(test_dna.codon_usage("_"))
 
-print(colored(DNAStr))
+for rf in test_dna.gen_reading_frames():
+    print(rf)
 
-print(countNucFrequency((DNAStr)))
-
-print(colored(transcription((DNAStr))))
-
-print(colored(DNAStr))
-print(''.join(['|' for c in range(len(DNAStr))]))
-print(colored(reverse_complement((DNAStr))))
+print(test_dna.proteins_from_rf(['N', 'P', '_', 'M', 'H', 'G', 'Q', 'V', 'Y', 'K', 'A', 'P', 'E', 'M', 'A', 'H']))
+ 
