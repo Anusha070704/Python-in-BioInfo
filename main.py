@@ -1,7 +1,8 @@
 from bio_seq import *
+from utilities import *
 
 test_dna=bio_seq()
-test_dna.generate_rnd_seq(50, "DNA")
+test_dna.generate_rnd_seq(50, "RNA")
 
 print(test_dna.get_seq_info())
 print(test_dna.nucleotide_frequency())
@@ -15,5 +16,5 @@ print(test_dna.codon_usage("_"))
 for rf in test_dna.gen_reading_frames():
     print(rf)
 
-print(test_dna.proteins_from_rf(['N', 'P', '_', 'M', 'H', 'G', 'Q', 'V', 'Y', 'K', 'A', 'P', 'E', 'M', 'A', 'H']))
+print(test_dna.all_proteins_from_orfs())
  

@@ -13,7 +13,7 @@ class bio_seq:
         assert self.is_valid, f"Provided data does not seem to be correct {self.dna_seq_type} sequence"
 
     def validate(self):
-        return set(Nucleotides).issuperset(self.dna_seq)
+        return set(Nucleotides[self.dna_seq_type]).issuperset(self.dna_seq)
     
     def get_seq_biotype(self):
         return self.dna_seq_type
@@ -22,17 +22,22 @@ class bio_seq:
         return f"[Label]: {self.label}\n[Sequence]: {self.dna_seq}\n[BioType]: {self.dna_seq_type}\n[Length]: {len(self.dna_seq)}"
     
     def generate_rnd_seq(self, length=10, dna_seq_type="DNA"):
-        dna_seq=''.join([random.choice(Nucleotides) for x in range(length)])
+        dna_seq=''.join([random.choice(Nucleotides[dna_seq_type]) for x in range(length)])
         self.__init__(dna_seq, dna_seq_type, "Randomly generated sequence")
 
     def nucleotide_frequency(self):
         return dict(Counter(self.dna_seq))
     
     def transcription(self):
-        return self.dna_seq.replace("T", "U")
+        if self.dna_seq_type == "DNA":
+            return self.dna_seq.replace("T", "U")
+        return "Not a DNA sequence"
     
     def reverse_complement(self):
-        mapping=str.maketrans('ATGC','TAGC')
+        if self.dna_seq_type == "DNA":
+            mapping=str.maketrans('ATGC','TAGC')
+        else:
+            mapping=str.maketrans('AUCG', 'UAGC')
         return self.dna_seq.translate(mapping)[::-1]
     
     def gc_content(self):
@@ -46,13 +51,23 @@ class bio_seq:
         return res
     
     def translate_seq(self, init_pos=0):
-        return[DNA_Codons[self.dna_seq[pos:pos+3]]for pos in range(init_pos, len(self.dna_seq) - 2,3)]
+        if self.dna_seq_type == "DNA":
+            return[DNA_Codons[self.dna_seq[pos:pos+3]]for pos in range(init_pos, len(self.dna_seq) - 2,3)]
+        elif self.dna_seq_type == "RNA":
+            return[RNA_Codons[self.dna_seq[pos:pos+3]]for pos in range(init_pos, len(self.dna_seq) - 2,3)]
+
     
     def codon_usage(self, aminoacid):
         tmplist=[]
-        for i in range(0,len(self.dna_seq)-2,3):
-            if DNA_Codons[self.dna_seq[i:i+3]]==aminoacid:
-                tmplist.append(self.dna_seq[i:i+3])
+        if self.dna_seq_type == "DNA":
+            for i in range(0,len(self.dna_seq)-2,3):
+                if DNA_Codons[self.dna_seq[i:i+3]]==aminoacid:
+                    tmplist.append(self.dna_seq[i:i+3])
+        elif self.dna_seq_type == "RNA":
+            for i in range(0,len(self.dna_seq)-2,3):
+                if RNA_Codons[self.dna_seq[i:i+3]]==aminoacid:
+                    tmplist.append(self.dna_seq[i:i+3])
+
         freqDict=dict(Counter(tmplist))
         totalWeight=sum(freqDict.values())
         for self.dna_seq in freqDict:
